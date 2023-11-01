@@ -21,6 +21,7 @@ public class GestionClientSav extends JFrame {
     private JTextArea reclamationArea;
     private DefaultTableModel tableModel;
     private String result;
+    JFrame newFrame = new JFrame("New Window");
 
     public GestionClientSav() {
         setTitle("Formulaire de demande d'assistance");
@@ -30,12 +31,12 @@ public class GestionClientSav extends JFrame {
         JPanel formulairePanel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.insets = new Insets(10, 10, 10, 10);
+        constraints.insets = new Insets(10, 50, 10, 50);
 
         // Label et champ pour le nom
         constraints.gridx = 0;
         constraints.gridy = 0;
-        formulairePanel.add(new JLabel("Titre :"), constraints);
+        formulairePanel.add(new JLabel("Id client :"), constraints);
 
         constraints.gridx = 1;
         nomField = new JTextField(20);
@@ -76,7 +77,7 @@ public class GestionClientSav extends JFrame {
 // Bouton Envoyer
 constraints.gridx = 0;
 constraints.gridy = 6;
-constraints.gridwidth = 2;
+constraints.gridwidth = 3;
 JButton envoyerButton = new JButton("Envoyer");
 
 envoyerButton.addActionListener(new ActionListener() {
@@ -87,7 +88,7 @@ envoyerButton.addActionListener(new ActionListener() {
 
 
         // Établir la connexion à la base de données et exécuter la requête d'insertion
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sav", "root", "")) {
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://172.16.18.154:3306/sav", "insta", "insta")) {
             String insertQuery = "INSERT INTO sav_client (id_client, descripton, date) VALUES (?, ?, ?)";
             try (PreparedStatement pstmt = conn.prepareStatement(insertQuery)) {
                 pstmt.setString(1, id_client);
@@ -99,7 +100,7 @@ envoyerButton.addActionListener(new ActionListener() {
                 pstmt.executeUpdate();
 
                 // Ajouter les données au modèle de tableau
-                String[] rowData = {id_client, descripton, strDate};
+                String[] rowData = {null,id_client, descripton, strDate};
                 tableModel.addRow(rowData);
             }
         } catch (SQLException ex) {
@@ -113,7 +114,7 @@ formulairePanel.add(envoyerButton, constraints);
 
 
         // Créer le modèle de tableau
-        String[] columnNames = {"id", "id_clients", "Réclamation", "Date", "Action"};
+        String[] columnNames = {"Id","id_clients", "Réclamation", "Date"};
         tableModel = new DefaultTableModel(columnNames, 0);
 
         // Créer le tableau
@@ -121,7 +122,7 @@ formulairePanel.add(envoyerButton, constraints);
         JScrollPane scrollPane = new JScrollPane(tableau);
 
         constraints.gridx = 0;
-        constraints.gridy = 8;
+        constraints.gridy = 9;
         constraints.gridwidth = 3;
         formulairePanel.add(scrollPane, constraints);
 
@@ -133,7 +134,7 @@ formulairePanel.add(envoyerButton, constraints);
 
       //étape 2: créer l'objet de connexion
       Connection conn = DriverManager.getConnection(
-      "jdbc:mysql://localhost:3306/sav", "root", "");
+      "jdbc:mysql://172.16.18.154:3306/sav", "insta", "insta");
 
       //étape 3: créer l'objet statement 
       Statement stmt = conn.createStatement();
@@ -158,8 +159,8 @@ formulairePanel.add(envoyerButton, constraints);
       System.out.println("erreur");
     }
 
-    constraints.gridx = 1;
-    constraints.gridy = 7;
+    constraints.gridx = 0;
+    constraints.gridy = 8;
     constraints.gridwidth = 3;
     JButton buttonRemRow = new JButton("Suprimmer");
     
@@ -179,7 +180,7 @@ formulairePanel.add(envoyerButton, constraints);
 
       //étape 2: créer l'objet de connexion
       Connection conn = DriverManager.getConnection(
-      "jdbc:mysql://localhost:3306/sav", "root", "");
+      "jdbc:mysql://172.16.18.154:3306/sav", "insta", "insta");
 
       //étape 3: créer l'objet statement 
       Statement stmt = conn.createStatement();
@@ -203,10 +204,56 @@ formulairePanel.add(envoyerButton, constraints);
 			
 		}
     });
-
-    
-    
     formulairePanel.add(buttonRemRow, constraints);
+
+    constraints.gridx = 0;
+    constraints.gridy = 7;
+    constraints.gridwidth = 3;
+    JButton buttonUpdate = new JButton("Modifier");
+    
+    // todo ajouter methode de suppression
+    buttonUpdate.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+            int idRow = tableau.getSelectedRow();
+            int idUserr = (int) tableau.getValueAt(idRow, 0);
+            String descripton = reclamationArea.getText();
+            System.out.print(descripton);
+            
+            try
+            {
+            //étape 1: charger la classe de driver
+            Class.forName("com.mysql.jdbc.Driver");
+
+            //étape 2: créer l'objet de connexion
+            Connection conn = DriverManager.getConnection(
+            "jdbc:mysql://172.16.18.154:3306/sav", "insta", "insta");
+
+            //étape 3: créer l'objet statement 
+            Statement stmt = conn.createStatement();
+            stmt.executeUpdate("UPDATE `sav_client` SET `descripton` = '"+descripton+"' WHERE `sav_client`.`id` ="+idUserr);
+
+
+            System.out.println("tes ok");
+
+
+            }
+            catch(Exception ei){ 
+            System.out.println(ei);
+            System.out.println("erreur");
+            }
+                
+
+            System.out.print("okokk");
+            //tableModel.removeRow(2);
+			
+		}
+    });
+
+    // TODO terminer le update
+    formulairePanel.add(buttonUpdate, constraints);
 
         add(formulairePanel);
         pack();
