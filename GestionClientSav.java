@@ -31,7 +31,7 @@ public class GestionClientSav extends JFrame {
         JPanel formulairePanel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.insets = new Insets(10, 50, 10, 50);
+        constraints.insets = new Insets(10, 10, 10, 10);
 
         // Label et champ pour le nom
         constraints.gridx = 0;
@@ -88,7 +88,7 @@ envoyerButton.addActionListener(new ActionListener() {
 
 
         // Établir la connexion à la base de données et exécuter la requête d'insertion
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://172.16.18.154:3306/sav", "insta", "insta")) {
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sav", "root", "")) {
             String insertQuery = "INSERT INTO sav_client (id_client, descripton, date) VALUES (?, ?, ?)";
             try (PreparedStatement pstmt = conn.prepareStatement(insertQuery)) {
                 pstmt.setString(1, id_client);
@@ -134,7 +134,7 @@ formulairePanel.add(envoyerButton, constraints);
 
       //étape 2: créer l'objet de connexion
       Connection conn = DriverManager.getConnection(
-      "jdbc:mysql://172.16.18.154:3306/sav", "insta", "insta");
+      "jdbc:mysql://localhost:3306/sav", "root", "");
 
       //étape 3: créer l'objet statement 
       Statement stmt = conn.createStatement();
@@ -180,7 +180,7 @@ formulairePanel.add(envoyerButton, constraints);
 
       //étape 2: créer l'objet de connexion
       Connection conn = DriverManager.getConnection(
-      "jdbc:mysql://172.16.18.154:3306/sav", "insta", "insta");
+      "jdbc:mysql://localhost:3306/sav", "root", "");
 
       //étape 3: créer l'objet statement 
       Statement stmt = conn.createStatement();
@@ -229,7 +229,7 @@ formulairePanel.add(envoyerButton, constraints);
 
             //étape 2: créer l'objet de connexion
             Connection conn = DriverManager.getConnection(
-            "jdbc:mysql://172.16.18.154:3306/sav", "insta", "insta");
+            "jdbc:mysql://localhost:3306/sav", "root", "");
 
             //étape 3: créer l'objet statement 
             Statement stmt = conn.createStatement();
@@ -244,6 +244,7 @@ formulairePanel.add(envoyerButton, constraints);
             System.out.println(ei);
             System.out.println("erreur");
             }
+
                 
 
             System.out.print("okokk");
